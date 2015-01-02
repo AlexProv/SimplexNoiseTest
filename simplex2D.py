@@ -3,7 +3,7 @@ import math
 import random
 def hash(a):
     random.seed(a)
-    return random.randint(0,255)
+    return random.randint(0,255) #= nb element in _perm (255)
     #a = int(a)
     #a = (a ^ 61) ^ (a >> 16);
     #a = a + (a << 3)
