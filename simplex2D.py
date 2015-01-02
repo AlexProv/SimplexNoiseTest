@@ -1,13 +1,16 @@
 #https://code.google.com/p/battlestar-tux/source/browse/procedural/simplexnoise.py
 import math 
+import random
 def hash(a):
-    a = int(a)
-    a = (a ^ 61) ^ (a >> 16);
-    a = a + (a << 3)
-    a = a ^ (a >> 4)
-    a = a * 0x27d4eb2d
-    a = a ^ (a >> 15)
-    return a
+    random.seed(a)
+    return random.randint(0,255)
+    #a = int(a)
+    #a = (a ^ 61) ^ (a >> 16);
+    #a = a + (a << 3)
+    #a = a ^ (a >> 4)
+    #a = a * 0x27d4eb2d
+    #a = a ^ (a >> 15)
+    #return a
 
 def OctaveNoise2D(octaves, persistence, scale, x, y,seed):
     total = 0.0
