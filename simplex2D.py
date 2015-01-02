@@ -1,7 +1,15 @@
 #https://code.google.com/p/battlestar-tux/source/browse/procedural/simplexnoise.py
 import math 
+def hash(a):
+    a = int(a)
+    a = (a ^ 61) ^ (a >> 16);
+    a = a + (a << 3)
+    a = a ^ (a >> 4)
+    a = a * 0x27d4eb2d
+    a = a ^ (a >> 15)
+    return a
 
-def OctaveNoise2D(octaves, persistence, scale, x, y):
+def OctaveNoise2D(octaves, persistence, scale, x, y,seed):
     total = 0.0
     frequency = scale
     amplitude = 1.0
@@ -9,18 +17,18 @@ def OctaveNoise2D(octaves, persistence, scale, x, y):
     maxAmplitude = 0.0
 
     for i in range(octaves):
-        total += RawNoise2D(x * frequency, y * frequency) * amplitude
+        total += RawNoise2D(x * frequency, y * frequency,seed,scale) * amplitude
         frequency*=2.0
         maxAmplitude += amplitude
         amplitude *= persistence
 
     return total / maxAmplitude
 
-def scaledOctaveNoise2D(octaves,persistence,scale,loBound,hiBound,x,y):
-    return (OctaveNoise2D(octaves,persistence,scale,x,y) *
+def scaledOctaveNoise2D(octaves,persistence,scale,loBound,hiBound,x,y,seed):
+    return (OctaveNoise2D(octaves,persistence,scale,x,y,seed) *
            (hiBound - loBound) / 2 + (hiBound + loBound) / 2 )
 
-def RawNoise2D(x,y):
+def RawNoise2D(x,y,seed,scale):
     n0,n1,n2 = 0.0,0.0,0.0
 
     f2 = 0.5* (math.sqrt(3.0) - 1.0) #skew input space cell wtf
@@ -57,6 +65,12 @@ def RawNoise2D(x,y):
     gi0 = _perm[ii+_perm[jj]] % 12
     gi1 = _perm[ii+i1+_perm[jj+j1]] % 12
     gi2 = _perm[ii+1+_perm[jj+1]] % 12
+
+    #(seed * mapHeight + y) * mapWidth + x
+    #alex mod
+    gi0 = hash((ii + seed*scale)*scale +jj) % 12
+    gi1 = hash(((ii+i1) + seed*scale)*scale +jj+j1) % 12
+    gi2 = hash(((ii+1) + seed*scale)*scale +jj+1) % 12
 
     t0 = 0.5 - x0*x0 - y0*y0
     if t0 < 0:

@@ -32,31 +32,33 @@ def badway():
 
 def main():
     size = int(sys.argv[1])
+    seed = float(sys.argv[2])
+    
     zoom = 0.005
     imgR = Image.new('RGBA',(size,size))
     imgG = Image.new('RGBA',(size,size))
     imgB = Image.new('RGBA',(size,size))
     #draw = ImageDraw.Draw(img)
-    
-    imgR = fillBNW(imgR,0,255,zoom,size)
-    imgG = fillBNW(imgG,500,255+500,zoom,size)
-    imgB = fillBNW(imgB,800,255+800,zoom,size)
+    imgR = fillBNW(imgR,0,255,zoom,size,seed)
+    #imgR = fillBNW(imgR,0,255,zoom,size)
+    #imgG = fillBNW(imgG,500,255+500,zoom,size)
+    #imgB = fillBNW(imgB,800,255+800,zoom,size)
 
-    img = filterToRGB(imgR,imgG,imgB,size)
+    #img = filterToRGB(imgR,imgG,imgB,size)
 
     print 'done'
-    img.show()
+    imgR.show()
     #imgR.show()
     #imgG.show()
     #imgB.show()
 
-def fillBNW(img,min,max,zoom,size):
+def fillBNW(img,min,max,zoom,size,seed):
     
     pixel = img.load()
     
     for i in range(size):
         for j in range(size):
-            value = int(sp.scaledOctaveNoise2D(octaves=10,persistence=0.25,scale=2.1,loBound=min,hiBound=max,x=i*zoom,y=j*zoom))
+            value = int(sp.scaledOctaveNoise2D(octaves=10,persistence=0.25,scale=2.1,loBound=min,hiBound=max,x=i*zoom,y=j*zoom,seed = seed))
             pixel[i,j] = (value%255,value%255,value%255,255)
 
     return img
